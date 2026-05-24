@@ -314,6 +314,7 @@ export default function RequestVerificationTable() {
 
   // Queries
   const queries: Record<string, string> = { page, limit };
+  queries.sort = "-createdAt";
 
 
   const { data, isLoading } = useGetAllVerificationQuery(queries);
