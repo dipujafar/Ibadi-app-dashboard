@@ -1,0 +1,14 @@
+services:
+  frontend:
+    build: .
+    image: nazmulhasn/ibadi_dashboard:latest
+    container_name: ibadi_dashboard
+    restart: unless-stopped
+    environment:
+      - PORT=3005
+      - NEXT_PUBLIC_BASE_URL=https://api.iumi.ro/api/v1
+      - NEXT_PUBLIC_SOCKET_URL=https://socket.iumi.ro
+    expose:
+      - "3005" 
+
+ 
