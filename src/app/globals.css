@@ -72,6 +72,15 @@
   border-radius: 10px;
   overflow: auto !important;
 }
+.quill-wrapper-container > .quill > .ql-container {
+  /* background-color: white; */
+  color: var(--color-text-color) !important;
+  height: 300px !important;
+  /* border: 1px solid #0c7214 !important; */
+  border-radius: 10px;
+  overflow: auto !important;
+  background: #F8FAFC;
+}
 .text-editor {
   /* background-color: white; */
   color: var(--color-text-color) !important;

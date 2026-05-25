@@ -1,7 +1,7 @@
 import { RiDashboardHorizontalFill } from "react-icons/ri";
 import { IoBookmarksOutline, IoSettingsOutline } from "react-icons/io5";
 import Link from "next/link";
-import { BadgeCheck, MessageCircleMore, ServerCog, Star, UsersRound, } from "lucide-react";
+import { BadgeCheck, LayoutTemplate, MessageCircleMore, ServerCog, Star, UsersRound, } from "lucide-react";
 import { BiCategory } from "react-icons/bi";
 import { GrUserExpert } from "react-icons/gr";
 import { MdAddTask } from "react-icons/md";
@@ -63,6 +63,11 @@ export const navLinks = [
     key: "client-reviews",
     icon: <Star size={18} />,
     label: <Link href={"/client-reviews"}>Client Reviews</Link>,
+  },
+  {
+    key: "web-content",
+    icon: <LayoutTemplate size={18} />,
+    label: <Link href={"/web-content"}>Web Content</Link>,
   },
   {
     key: "settings",
