@@ -29,7 +29,7 @@ export default function StatContainer() {
     {
       id: 3,
       title: "Total Earning",
-      amount: `$${data?.data?.totalEarnings || "0"}`,
+      amount: `$${data?.data?.totalEarnings.toFixed(2) || "0"}`,
       image: "/icon_3.png",
     }
   ];
