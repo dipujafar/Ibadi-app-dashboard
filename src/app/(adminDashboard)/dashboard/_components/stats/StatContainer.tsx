@@ -8,7 +8,6 @@ import React from "react";
 
 export default function StatContainer() {
   const { data, isLoading } = useGetStatQuery(undefined);
-  console.log(data?.data);
 
   if (isLoading) return <StatsCardSkeleton />;
 

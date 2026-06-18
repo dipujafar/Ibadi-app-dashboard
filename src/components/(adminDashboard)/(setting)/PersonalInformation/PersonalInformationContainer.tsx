@@ -27,7 +27,7 @@ const PersonalInformationContainer = () => {
 
     if (file) {
       const url = URL.createObjectURL(file);
-      console.log(url);
+      // console.log(url);
       setImageUrl(url);
       setFileName(file);
     } else {

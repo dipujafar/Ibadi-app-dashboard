@@ -21,8 +21,6 @@ const AboutUsEditor = () => {
   const [value, setValue] = useState("");
   const [updateContent, { isLoading: isUpdating }] = useUpdateContentMutation();
 
-  console.log(data?.data?.aboutUs)
-
 
   useEffect(() => {
     if (data?.data?.aboutUs) {

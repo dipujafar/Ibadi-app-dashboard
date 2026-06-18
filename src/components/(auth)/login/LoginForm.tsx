@@ -44,7 +44,6 @@ export function LoginForm() {
       email: values.email,
       password: values.password,
     };
-    console.log(fcmToken)
     if (fcmToken) {
       formattedData["fcmToken"] = fcmToken;
     }
