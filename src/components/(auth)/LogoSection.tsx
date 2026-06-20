@@ -12,7 +12,7 @@ export default function LogoSection() {
           height={100}
           className="w-[250px]"
         />
-      </div>
+    </div>
     </div>
   );
 }
