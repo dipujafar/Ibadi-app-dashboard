@@ -55,7 +55,7 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
 
   useEffect(() => {
     const count = notificationData?.data?.filter(
-      (notification: any) => !notification?.read,
+      (notification: any) => !notification?.isRead,
     ).length;
     setUnreadNotificationCount(count);
   }, [notificationData?.data]);

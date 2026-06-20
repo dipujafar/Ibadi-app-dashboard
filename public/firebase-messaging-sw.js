@@ -9,7 +9,7 @@ const firebaseConfig = {
   projectId: "service-provider-umi",
   storageBucket: "service-provider-umi.firebasestorage.app",
   messagingSenderId: "102179953373",
-  appId: "1:102179953373:web:91f95932433488a1211934"
+  appId: "1:102179953373:web:91f95932433488a1211934",
 };
 // eslint-disable-next-line no-undef
 firebase.initializeApp(firebaseConfig);
@@ -22,7 +22,9 @@ messaging.onBackgroundMessage((payload) => {
     body: payload.notification.body,
     icon: "./logo.png",
     badge: "./logo.png",
-    data: payload.data,
+    data: {
+      url: payload.data?.url || "/notifications",
+    },
     vibrate: [100, 50, 100],
     sound: "default",
     tag: "notification",
@@ -39,7 +41,3 @@ messaging.onBackgroundMessage((payload) => {
   };
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
-
-
-
-

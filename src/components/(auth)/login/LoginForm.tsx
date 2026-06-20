@@ -29,7 +29,7 @@ export function LoginForm() {
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { fcmToken } = useFcmToken();
+  const { fcmToken, notificationPermissionStatus } = useFcmToken();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -40,13 +40,24 @@ export function LoginForm() {
   });
 
   const onSubmit = async (values: LoginFormValues) => {
-    const formattedData :{ email: string; password: string; fcmToken?: string} = {
+    console.log(notificationPermissionStatus)
+    if(notificationPermissionStatus === 'denied' || notificationPermissionStatus === 'default') {
+      toast.error('Please enable notification permission');
+      return
+    }
+    const formattedData: {
+      email: string;
+      password: string;
+      fcmToken?: string | null;
+    } = {
       email: values.email,
       password: values.password,
     };
-    if (fcmToken) {
-      formattedData["fcmToken"] = fcmToken;
-    }
+
+    console.log(notificationPermissionStatus);
+
+    formattedData["fcmToken"] = fcmToken || null;
+
     try {
       const res = await login(formattedData).unwrap();
       dispatch(
