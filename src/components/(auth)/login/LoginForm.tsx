@@ -40,7 +40,6 @@ export function LoginForm() {
   });
 
   const onSubmit = async (values: LoginFormValues) => {
-    console.log(notificationPermissionStatus);
     if (
       notificationPermissionStatus === "denied" ||
       notificationPermissionStatus === "default"
