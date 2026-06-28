@@ -40,23 +40,26 @@ export function LoginForm() {
   });
 
   const onSubmit = async (values: LoginFormValues) => {
-    console.log(notificationPermissionStatus)
-    if(notificationPermissionStatus === 'denied' || notificationPermissionStatus === 'default') {
-      toast.error('Please enable notification permission');
-      return
+    console.log(notificationPermissionStatus);
+    if (
+      notificationPermissionStatus === "denied" ||
+      notificationPermissionStatus === "default"
+    ) {
+      toast.error("Please enable notification permission");
+      return;
     }
     const formattedData: {
       email: string;
       password: string;
-      fcmToken?: string | null;
+      fcmToken?: string;
     } = {
       email: values.email,
       password: values.password,
     };
 
-    console.log(notificationPermissionStatus);
-
-    formattedData["fcmToken"] = fcmToken || null;
+    if (fcmToken) {
+      formattedData["fcmToken"] = fcmToken;
+    }
 
     try {
       const res = await login(formattedData).unwrap();
