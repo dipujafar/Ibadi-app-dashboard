@@ -187,7 +187,7 @@ export default function SubscriptionContainer() {
                   </div>
 
                   <Text strong className="text-2xl">
-                    ${(pkg.price / 100).toFixed(2)}
+                    ${(pkg.price).toFixed(2)}
                   </Text>
                   <Text> / {pkg.duration} days</Text>
 
