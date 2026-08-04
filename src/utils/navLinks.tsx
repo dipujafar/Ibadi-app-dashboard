@@ -1,12 +1,19 @@
 import { RiDashboardHorizontalFill } from "react-icons/ri";
 import { IoBookmarksOutline, IoSettingsOutline } from "react-icons/io5";
 import Link from "next/link";
-import { BadgeCheck, LayoutTemplate, MessageCircleMore, ServerCog, Star, UsersRound, } from "lucide-react";
+import {
+  BadgeCheck,
+  Crown,
+  LayoutTemplate,
+  MessageCircleMore,
+  ServerCog,
+  Star,
+  UsersRound,
+} from "lucide-react";
 import { BiCategory } from "react-icons/bi";
 import { GrUserExpert } from "react-icons/gr";
 import { MdAddTask } from "react-icons/md";
 import { BsQuestionSquare } from "react-icons/bs";
-
 
 export const navLinks = [
   {
@@ -33,6 +40,11 @@ export const navLinks = [
     key: "booking",
     icon: <IoBookmarksOutline size={18} />,
     label: <Link href={"/booking"}>Booking</Link>,
+  },
+  {
+    key: "subscriptions",
+    icon: <Crown size={18} />,
+    label: <Link href={"/subscriptions"}>Subscriptions</Link>,
   },
   {
     key: "experience",
