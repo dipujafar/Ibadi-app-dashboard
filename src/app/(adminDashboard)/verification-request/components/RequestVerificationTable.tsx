@@ -321,6 +321,8 @@ export default function RequestVerificationTable() {
   const [approveRequest, { isLoading: isApproving }] = useApproveRequestMutation();
   const [rejectRequest, { isLoading: isRejecting }] = useRejectRequestMutation();
 
+  console.log(data)
+
   const records: TVerificationRequest[] = data?.data?.data ?? [];
   const total: number = data?.data?.meta?.total ?? 0;
 

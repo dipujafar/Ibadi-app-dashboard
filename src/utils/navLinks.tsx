@@ -66,11 +66,11 @@ export const navLinks = [
     icon: <BsQuestionSquare size={18} />,
     label: <Link href={"/faqs"}>FAQs</Link>,
   },
-  {
-    key: "services",
-    icon: <ServerCog size={18} />,
-    label: <Link href={"/services"}>Services</Link>,
-  },
+  // {
+  //   key: "services",
+  //   icon: <ServerCog size={18} />,
+  //   label: <Link href={"/services"}>Services</Link>,
+  // },
   {
     key: "client-reviews",
     icon: <Star size={18} />,
