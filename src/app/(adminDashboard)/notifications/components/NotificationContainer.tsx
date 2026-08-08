@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import moment from "moment";
 import { Bell } from "lucide-react";
 import { useGetNotificationQuery } from "@/redux/api/notificationApi";
@@ -6,18 +6,20 @@ import PaginationSection from "@/components/shared/PaginationSection";
 import { useSearchParams } from "next/navigation";
 import NotificationContainerSkeleton from "./NotificationContainerSkeleton";
 
-
-
 const NotificationContainer = () => {
   const page = useSearchParams().get("page") || 1;
   const limit = useSearchParams().get("limit") || 10;
-  const query: Record<string, string | number> = {};
-  if (page) query.page = page;
-  if (limit) query.limit = limit;
+  const query: Record<string, string | number> = {
+    page,
+    limit,
+  };
+
   const { data, isLoading } = useGetNotificationQuery(query);
 
+
+
   if (isLoading) {
-    return <NotificationContainerSkeleton />
+    return <NotificationContainerSkeleton />;
   }
 
   return (
@@ -28,7 +30,7 @@ const NotificationContainer = () => {
         <div className="xl:mt-8 mt-6 xl:px-10 px-6 text-text-color">
           {/* showing today notification */}
           <div className="space-y-5">
-            {data?.data?.map((notification: any, index: any) => (
+            {data?.data?.toReversed()?.map((notification: any, index: any) => (
               <div className="flex items-center gap-x-4">
                 <div className="bg-[#00C0B5] size-10 flex justify-center items-center rounded-full cursor-pointer">
                   <Bell color="white" />
@@ -55,7 +57,11 @@ const NotificationContainer = () => {
         </div>
       </div>
       {/* pagination */}
-      <PaginationSection total={data?.meta?.total} current={data?.meta?.page} pageSize={Number(limit)} />
+      <PaginationSection
+        total={data?.meta?.total}
+        current={data?.meta?.page}
+        pageSize={Number(limit)}
+      />
     </div>
   );
 };

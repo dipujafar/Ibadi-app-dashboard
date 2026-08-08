@@ -8,9 +8,6 @@ export default function BlockUser({ id, isActive }: any) {
     const [blockUser] = useUserBlockMutation();
     const [unBlockedUser] = useUserUnBlockMutation();
 
-
-    console.log(id);
-
     const confirmBlock: PopconfirmProps["onConfirm"] = async () => {
         try {
             if (isActive) {

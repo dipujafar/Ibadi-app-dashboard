@@ -7,7 +7,7 @@ const notificationApi = baseApi.injectEndpoints({
       query: (params) => ({
         url: "/notifications",
         method: "GET",
-        params,
+        params
       }),
       providesTags: [tagTypes.notifications],
     }),
