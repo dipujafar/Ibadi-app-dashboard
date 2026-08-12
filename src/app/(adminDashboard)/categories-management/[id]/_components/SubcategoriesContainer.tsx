@@ -1,21 +1,21 @@
 "use client";
 import {
-  useCreateCategoryMutation,
-  useDeleteCategoryMutation,
-  useGetAllCategoriesQuery,
-  useUpdateCategoryMutation,
+  useCreateSubcategoryMutation,
+  useDeleteSubcategoryMutation,
+  useGetSubcategoriesQuery,
+  useUpdateSubcategoryMutation,
 } from "@/redux/api/categories";
 import { Popconfirm, TableProps, Modal, Form, Input, Image } from "antd";
 import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import DataTable from "@/utils/DataTable";
-import { ImageIcon,  Pencil, Trash2, X } from "lucide-react";
+import { ImageIcon, Pencil, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
-import Link from "next/link";
 
-type TCategory = {
+type TSubcategory = {
   id: string;
   name: string;
+  categoryId: string;
   image: string;
   isDeleted: boolean;
   createdAt: string;
@@ -25,23 +25,24 @@ type TCategory = {
 type TModalState = {
   open: boolean;
   mode: "create" | "update";
-  record?: TCategory;
+  record?: TSubcategory;
 };
 
-export default function CategoriesContainer() {
+export default function SubcategoriesContainer({ id }: { id: string }) {
+  const categoryName = useSearchParams().get("categoryName");
   const page = useSearchParams().get("page") || "1";
   const limit = useSearchParams().get("limit") || "12";
 
-  const queries: Record<string, string> = {};
+  const queries: Record<string, string> = { categoryId: id };
   if (page) queries.page = page;
   if (limit) queries.limit = limit;
 
-  const { data, isLoading } = useGetAllCategoriesQuery(queries);
-  const [createCategory, { isLoading: isCreating }] =
-    useCreateCategoryMutation();
-  const [updateCategory, { isLoading: isUpdating }] =
-    useUpdateCategoryMutation();
-  const [deleteCategory] = useDeleteCategoryMutation();
+  const { data, isLoading } = useGetSubcategoriesQuery(queries);
+  const [createSubcategory, { isLoading: isCreating }] =
+    useCreateSubcategoryMutation();
+  const [updateSubcategory, { isLoading: isUpdating }] =
+    useUpdateSubcategoryMutation();
+  const [deleteSubcategory] = useDeleteSubcategoryMutation();
 
   const [modal, setModal] = useState<TModalState>({
     open: false,
@@ -59,7 +60,7 @@ export default function CategoriesContainer() {
     setModal({ open: true, mode: "create" });
   };
 
-  const openUpdate = (record: TCategory) => {
+  const openUpdate = (record: TSubcategory) => {
     form.setFieldsValue({ name: record.name });
     setImageFile(null);
     setImagePreview(record.image);
@@ -86,15 +87,18 @@ export default function CategoriesContainer() {
     try {
       const values = await form.validateFields();
       const formData = new FormData();
-      formData.append("data", JSON.stringify({ name: values.name }));
+      formData.append(
+        "data",
+        JSON.stringify({ name: values.name, categoryId: id })
+      );
       if (imageFile) formData.append("image", imageFile);
 
       if (modal.mode === "create") {
-        await createCategory(formData).unwrap();
-        toast.success("Category created successfully");
+        await createSubcategory(formData).unwrap();
+        toast.success("Subcategory created successfully");
       } else if (modal.mode === "update" && modal.record) {
-        await updateCategory({ id: modal.record.id, ...formData }).unwrap();
-        toast.success("Category updated successfully");
+        await updateSubcategory({ id: modal.record.id, data: formData }).unwrap();
+        toast.success("Subcategory updated successfully");
       }
       closeModal();
     } catch (err: any) {
@@ -103,17 +107,17 @@ export default function CategoriesContainer() {
   };
 
   // ── Delete ────────────────────────────────────────────────────────────────
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (subId: string) => {
     try {
-      await deleteCategory(id).unwrap();
-      toast.success("Category deleted successfully");
+      await deleteSubcategory(subId).unwrap();
+      toast.success("Subcategory deleted successfully");
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to delete category");
+      toast.error(err?.data?.message || "Failed to delete subcategory");
     }
   };
 
   // ── Table columns ─────────────────────────────────────────────────────────
-  const columns: TableProps<TCategory>["columns"] = [
+  const columns: TableProps<TSubcategory>["columns"] = [
     {
       title: "No.",
       render: (_, __, index) =>
@@ -127,7 +131,7 @@ export default function CategoriesContainer() {
         src ? (
           <Image
             src={src}
-            alt="category"
+            alt="subcategory"
             width={60}
             height={60}
             className="rounded object-cover"
@@ -155,8 +159,8 @@ export default function CategoriesContainer() {
             <Pencil size={18} />
           </button>
           <Popconfirm
-            title="Delete Category"
-            description="Are you sure you want to delete this category?"
+            title="Delete Subcategory"
+            description="Are you sure you want to delete this subcategory?"
             onConfirm={() => handleDelete(rec.id)}
             okText="Yes, Delete"
             cancelText="Cancel"
@@ -166,11 +170,6 @@ export default function CategoriesContainer() {
               <Trash2 size={18} />
             </button>
           </Popconfirm>
-          <Link href={`/categories-management/${rec.id}?categoryName=${rec.name}`}>
-            <button className="bg-[#00BFA5] hover:bg-[#00897B] text-white transition-colors px-2.5 py-1.5 rounded">
-              Subcategories
-            </button>{" "}
-          </Link>
         </div>
       ),
       width: 100,
@@ -182,12 +181,17 @@ export default function CategoriesContainer() {
     <div className="bg-white rounded-xl">
       {/* Header */}
       <div className="flex items-center justify-between py-4 px-4">
-        <h1 className="text-xl font-semibold text-gray-900">All Category</h1>
+        <div>
+          <h1 className="text-xl font-semibold text-gray-900">
+            {categoryName}
+          </h1>
+          <h6 className="text-sm font-medium text-gray-500">Subcategory</h6>
+        </div>
         <button
           onClick={openCreate}
           className="bg-[#00BFA5] hover:bg-[#00897B] text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
         >
-          Add Category
+          Add Subcategory
         </button>
       </div>
 
@@ -222,16 +226,18 @@ export default function CategoriesContainer() {
         </div>
 
         <Form form={form} layout="vertical" requiredMark={false}>
-          {/* Category Name */}
+          {/* Subcategory Name */}
           <Form.Item
             label={
-              <span className="font-semibold text-gray-800">Category Name</span>
+              <span className="font-semibold text-gray-800">
+                Subcategory Name
+              </span>
             }
             name="name"
-            rules={[{ required: true, message: "Category name is required" }]}
+            rules={[{ required: true, message: "Subcategory name is required" }]}
           >
             <Input
-              placeholder="Enter category name"
+              placeholder="Enter subcategory name"
               className="!rounded-lg !h-10"
             />
           </Form.Item>
@@ -241,7 +247,7 @@ export default function CategoriesContainer() {
             label={<span className="font-semibold text-gray-800">Image</span>}
           >
             <label
-              htmlFor="category-image-upload"
+              htmlFor="subcategory-image-upload"
               className="flex items-center gap-2 border border-gray-300 rounded-lg h-10 px-3 cursor-pointer hover:border-[#00BFA5] transition-colors"
             >
               <ImageIcon size={16} className="text-gray-400" />
@@ -250,7 +256,7 @@ export default function CategoriesContainer() {
               </span>
             </label>
             <input
-              id="category-image-upload"
+              id="subcategory-image-upload"
               type="file"
               accept="image/*"
               className="hidden"

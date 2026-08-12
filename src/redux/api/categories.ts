@@ -34,6 +34,37 @@ const contentApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.categories],
     }),
+    createSubcategory: builder.mutation({
+      query: (data) => ({
+        url: `/subcategories`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [tagTypes.categories],
+    }),
+    getSubcategories: builder.query({
+      query: (queries) => ({
+        url: "/subcategories",
+        method: "GET",
+        params: queries,
+      }),
+      providesTags: [tagTypes.categories],
+    }),
+    updateSubcategory: builder.mutation({
+      query: (data) => ({
+        url: `/subcategories/${data?.id}`,
+        method: "PATCH",
+        body: data?.data,
+      }),
+      invalidatesTags: [tagTypes.categories],
+    }),
+    deleteSubcategory: builder.mutation({
+      query: (id) => ({
+        url: `/subcategories/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [tagTypes.categories],
+    }),
   }),
 });
 
@@ -41,5 +72,9 @@ export const {
   useGetAllCategoriesQuery,
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
-  useDeleteCategoryMutation
+  useDeleteCategoryMutation,
+  useCreateSubcategoryMutation,
+  useGetSubcategoriesQuery,
+  useUpdateSubcategoryMutation,
+  useDeleteSubcategoryMutation,
 } = contentApi;
