@@ -1,10 +1,8 @@
-"use client";
-
+"use client";;
 import { useState } from "react";
-import { Input, Modal, TableProps, Image, Tag } from "antd";
-import { Search, Download, FileText, CheckCircle, XCircle, Eye, Loader2 } from "lucide-react";
+import { Modal, TableProps, Image, Tag, Avatar } from "antd";
+import { Download, FileText, CheckCircle, XCircle, Eye, Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useDebounce } from "use-debounce";
 import moment from "moment";
 import { toast } from "sonner";
 import DataTable from "@/utils/DataTable";
@@ -164,20 +162,36 @@ const DocumentsModal = ({
       <div className="space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-800">Verification Request</h2>
+          <h2 className="text-xl font-semibold text-gray-800">
+            Verification Request
+          </h2>
           <StatusBadge status={record.status} />
         </div>
 
         {/* User Info */}
         <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
-          <img
-            src={record.user.profile}
-            alt={record.user.name}
-            className="w-12 h-12 rounded-full object-cover border border-gray-200"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${record.user.name}&background=e5e7eb&color=374151`;
-            }}
-          />
+          {record.user.profile ? (
+            <Image
+              src={record.user.profile}
+              alt={record.user.name}
+              width={48}
+              height={48}
+              className="w-12 h-12 rounded-full object-cover border border-gray-200"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src =
+                  `https://ui-avatars.com/api/?name=${record.user.name}&background=e5e7eb&color=374151`;
+              }}
+            />
+          ) : (
+            <Avatar size={48}>
+              <Avatar size={40} className="uppercase text-xl">
+                {record.user.name
+                  ?.split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </Avatar>
+            </Avatar>
+          )}
           <div>
             <p className="font-semibold text-gray-900">{record.user.name}</p>
             <p className="text-sm text-gray-500">{record.user.email}</p>
@@ -194,8 +208,12 @@ const DocumentsModal = ({
         {/* Bio */}
         {record.user.serviceProviderInfo?.bio && (
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">Bio</p>
-            <p className="text-sm text-gray-700">{record.user.serviceProviderInfo.bio}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">
+              Bio
+            </p>
+            <p className="text-sm text-gray-700">
+              {record.user.serviceProviderInfo.bio}
+            </p>
           </div>
         )}
 
@@ -205,7 +223,9 @@ const DocumentsModal = ({
             Documents ({record.documents.length})
           </p>
           {record.documents.length === 0 ? (
-            <p className="text-sm text-gray-400 italic">No documents attached.</p>
+            <p className="text-sm text-gray-400 italic">
+              No documents attached.
+            </p>
           ) : (
             <div className="grid grid-cols-2 gap-3">
               {record.documents.map((doc, idx) => (
@@ -255,7 +275,9 @@ const DocumentsModal = ({
         {/* Rejection reason (if rejected) */}
         {record.status === "rejected" && record.reason && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-3">
-            <p className="text-xs font-semibold text-red-600 mb-1">Rejection Reason</p>
+            <p className="text-xs font-semibold text-red-600 mb-1">
+              Rejection Reason
+            </p>
             <p className="text-sm text-red-700">{record.reason}</p>
           </div>
         )}
@@ -306,8 +328,8 @@ export default function RequestVerificationTable() {
   const page = useSearchParams().get("page") || "1";
   const limit = useSearchParams().get("limit") || "10";
 
-
-  const [selectedRecord, setSelectedRecord] = useState<TVerificationRequest | null>(null);
+  const [selectedRecord, setSelectedRecord] =
+    useState<TVerificationRequest | null>(null);
   const [docsModalOpen, setDocsModalOpen] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [pendingRejectId, setPendingRejectId] = useState<string | null>(null);
@@ -316,12 +338,13 @@ export default function RequestVerificationTable() {
   const queries: Record<string, string> = { page, limit };
   queries.sort = "-createdAt";
 
-
   const { data, isLoading } = useGetAllVerificationQuery(queries);
-  const [approveRequest, { isLoading: isApproving }] = useApproveRequestMutation();
-  const [rejectRequest, { isLoading: isRejecting }] = useRejectRequestMutation();
+  const [approveRequest, { isLoading: isApproving }] =
+    useApproveRequestMutation();
+  const [rejectRequest, { isLoading: isRejecting }] =
+    useRejectRequestMutation();
 
-  console.log(data)
+  console.log(data);
 
   const records: TVerificationRequest[] = data?.data?.data ?? [];
   const total: number = data?.data?.meta?.total ?? 0;
@@ -368,7 +391,8 @@ export default function RequestVerificationTable() {
       width: 60,
       render: (_, __, index) => (
         <span className="text-gray-500 text-sm">
-          #{Number(page) === 1
+          #
+          {Number(page) === 1
             ? index + 1
             : (Number(page) - 1) * Number(limit) + index + 1}
         </span>
@@ -379,16 +403,34 @@ export default function RequestVerificationTable() {
       dataIndex: "user",
       render: (_, rec) => (
         <div className="flex items-center gap-2.5">
-          <img
-            src={rec.user.profile}
-            alt={rec.user.name}
-            className="w-9 h-9 rounded-full object-cover border border-gray-200 shrink-0"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${rec.user.name}&background=e5e7eb&color=374151&size=36`;
-            }}
-          />
+          {rec.user.profile ? (
+            <Image
+              src={rec.user.profile}
+              alt={rec.user.name}
+              width={36}
+              height={36}
+              className="w-9 h-9 rounded-full object-cover border border-gray-200 shrink-0"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src =
+                  `https://ui-avatars.com/api/?name=${rec.user.name}&background=e5e7eb&color=374151&size=36`;
+              }}
+            />
+          ) : (
+            <div>
+              <Avatar>
+                <Avatar className="uppercase">
+                  {rec.user.name
+                    ?.split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </Avatar>
+              </Avatar>
+            </div>
+          )}
           <div>
-            <p className="text-sm font-medium text-gray-800 leading-tight">{rec.user.name}</p>
+            <p className="text-sm font-medium text-gray-800 leading-tight">
+              {rec.user.name}
+            </p>
             <p className="text-xs text-gray-400">{rec.user.email}</p>
           </div>
         </div>
@@ -397,13 +439,17 @@ export default function RequestVerificationTable() {
     {
       title: "Phone",
       dataIndex: ["user", "phoneNumber"],
-      render: (text) => <span className="text-sm text-gray-600">{text || "N/A"}</span>,
+      render: (text) => (
+        <span className="text-sm text-gray-600">{text || "N/A"}</span>
+      ),
     },
     {
       title: "Documents",
       dataIndex: "documents",
       render: (docs: TDocument[]) => (
-        <span className="text-sm text-gray-600">{docs.length} file{docs.length !== 1 ? "s" : ""}</span>
+        <span className="text-sm text-gray-600">
+          {docs.length} file{docs.length !== 1 ? "s" : ""}
+        </span>
       ),
     },
     {
@@ -415,7 +461,9 @@ export default function RequestVerificationTable() {
       title: "Submitted",
       dataIndex: "createdAt",
       render: (text) => (
-        <span className="text-sm text-gray-500">{moment(text).format("DD MMM YYYY")}</span>
+        <span className="text-sm text-gray-500">
+          {moment(text).format("DD MMM YYYY")}
+        </span>
       ),
     },
     {
@@ -437,8 +485,9 @@ export default function RequestVerificationTable() {
     <div className="bg-white rounded-xl shadow-sm border border-gray-100">
       {/* Toolbar */}
       <div className="flex items-center justify-between py-4 px-4 border-b border-gray-100">
-        <h2 className="text-base font-semibold text-gray-800">Verification Requests</h2>
-       
+        <h2 className="text-base font-semibold text-gray-800">
+          Verification Requests
+        </h2>
       </div>
 
       {/* Table */}
