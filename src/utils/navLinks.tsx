@@ -47,7 +47,7 @@ export const navLinks = [
     label: <Link href={"/subscriptions"}>Subscriptions</Link>,
   },
   {
-    key: "experience",
+    key: "experience-management",
     icon: <GrUserExpert size={18} />,
     label: <Link href={"/experience-management"}>Experience Options</Link>,
   },
