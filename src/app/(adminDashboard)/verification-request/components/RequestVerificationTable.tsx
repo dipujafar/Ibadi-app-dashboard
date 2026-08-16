@@ -1,7 +1,14 @@
-"use client";;
+"use client";
 import { useState } from "react";
 import { Modal, TableProps, Image, Tag, Avatar } from "antd";
-import { Download, FileText, CheckCircle, XCircle, Eye, Loader2 } from "lucide-react";
+import {
+  Download,
+  FileText,
+  CheckCircle,
+  XCircle,
+  Eye,
+  Loader2,
+} from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import moment from "moment";
 import { toast } from "sonner";
@@ -12,11 +19,21 @@ import {
   useRejectRequestMutation,
 } from "@/redux/api/verifyRequestApi";
 
-// ── Types ────────────────────────────────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
+const formatTypeLabel = (type: string) =>
+  type
+    // insert space before capital letters: "drivingLicense" -> "driving License"
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    // capitalize first letter
+    .replace(/^./, (c) => c.toUpperCase())
+    .trim();
+
+// ── Types ────────────────────────────────────────────────────────────────────
 type TDocument = {
   id: string;
   url: string;
+  type: string;
   requestId: string;
   messageId: string | null;
   userId: string | null;
@@ -227,44 +244,70 @@ const DocumentsModal = ({
               No documents attached.
             </p>
           ) : (
-            <div className="grid grid-cols-2 gap-3">
-              {record.documents.map((doc, idx) => (
-                <div
-                  key={doc.id}
-                  className="border border-gray-200 rounded-xl overflow-hidden group relative"
-                >
-                  {/* Image preview */}
-                  <div className="relative h-36 bg-gray-100 flex items-center justify-center overflow-hidden">
-                    <Image
-                      src={doc.url}
-                      alt={`Document ${idx + 1}`}
-                      className="object-cover w-full h-full"
-                      fallback="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='1.5'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3C/svg%3E"
-                      preview={{
-                        mask: (
-                          <div className="flex items-center gap-1 text-xs">
-                            <Eye size={14} /> Preview
-                          </div>
-                        ),
-                      }}
-                    />
-                  </div>
+            <div className="space-y-5">
+              {Object.entries(
+                record.documents.reduce<Record<string, TDocument[]>>(
+                  (acc, doc) => {
+                    const key = doc.type || "document";
+                    if (!acc[key]) acc[key] = [];
+                    acc[key].push(doc);
+                    return acc;
+                  },
+                  {},
+                ),
+              ).map(([type, docs]) => (
+                <div key={type}>
+                  <p className="text-sm font-medium text-gray-700 mb-2">
+                    {formatTypeLabel(type)}
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {docs.map((doc, idx) => (
+                      <div
+                        key={doc.id}
+                        className="border border-gray-200 rounded-xl overflow-hidden group relative"
+                      >
+                        {/* Image preview */}
+                        <div className="relative h-36 bg-gray-100 flex items-center justify-center overflow-hidden">
+                          <Image
+                            src={doc.url}
+                            alt={`${formatTypeLabel(type)} ${idx + 1}`}
+                            className="object-cover w-full h-full"
+                            fallback="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='1.5'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3C/svg%3E"
+                            preview={{
+                              mask: (
+                                <div className="flex items-center gap-1 text-xs">
+                                  <Eye size={14} /> Preview
+                                </div>
+                              ),
+                            }}
+                          />
+                        </div>
 
-                  {/* Footer row */}
-                  <div className="flex items-center justify-between px-3 py-2 bg-white border-t border-gray-100">
-                    <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                      <FileText size={13} />
-                      <span>Doc {idx + 1}</span>
-                    </div>
-                    <button
-                      onClick={() =>
-                        handleDownload(doc.url, `document-${idx + 1}-${doc.id}`)
-                      }
-                      className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                    >
-                      <Download size={13} />
-                      Download
-                    </button>
+                        {/* Footer row */}
+                        <div className="flex items-center justify-between px-3 py-2 bg-white border-t border-gray-100">
+                          <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                            <FileText size={13} />
+                            <span>
+                              {docs.length > 1
+                                ? `${formatTypeLabel(type)} ${idx + 1}`
+                                : formatTypeLabel(type)}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() =>
+                              handleDownload(
+                                doc.url,
+                                `${type}-${idx + 1}-${doc.id}`,
+                              )
+                            }
+                            className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                          >
+                            <Download size={13} />
+                            Download
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
