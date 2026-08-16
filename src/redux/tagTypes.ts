@@ -17,6 +17,7 @@ export const tagTypes = {
   webContent: "webContent",
   notifications: "notifications",
   packages: "packages",
+  support: "support",
 };
 
 export const tagTypesList = [
@@ -38,4 +39,5 @@ export const tagTypesList = [
   tagTypes.webContent,
   tagTypes.notifications,
   tagTypes.packages,
+  tagTypes.support,
 ];
